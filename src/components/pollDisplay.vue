@@ -29,8 +29,7 @@ export default {
         }
     },
     async mounted() {
-        if (!this.getPolls.length)
-            await this.fetchPolls();
+        await this.fetchPolls();
         this.poll = this.getPoll(this.id) ?? null;
     }
 }
