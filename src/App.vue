@@ -1,85 +1,72 @@
 <script setup>
-import { RouterLink, RouterView } from 'vue-router'
-import HelloWorld from './components/HelloWorld.vue'
+import { RouterLink, RouterView, useRouter } from 'vue-router';
+import { useAuthStore } from './stores/authStore';
+const router = useRouter();
+
+const getClass = (route) => {
+    return (route === router.currentRoute.value.name) ? 'currentRoute' : '';
+};
+
+const state = useAuthStore();
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-
-      <nav>
-        <RouterLink to="/">Home</RouterLink>
-        <RouterLink to="/about">About</RouterLink>
-      </nav>
-    </div>
-  </header>
-
-  <RouterView />
+    <header class="shadow">
+        <div id="logo">
+            <img src="/favicon.svg" width="64px" />
+            <h2>Poll Manager</h2>
+        </div>
+        <nav>
+            <RouterLink :class="getClass('home')" to="/">Home</RouterLink>
+            <RouterLink :class="getClass('create-poll')" to="/create-poll">Create poll</RouterLink>
+            <RouterLink :class="getClass('list')" to="/list">List polls</RouterLink>
+        </nav>
+        <div v-if="state.isAuthenticated">
+            Greetings and salutations, {{ state.username }}
+        </div>
+        <div v-else>
+            <RouterLink :class="getClass('login')" to="/login">Login</RouterLink>
+        </div>
+    </header>
+    <RouterView />
 </template>
 
 <style scoped>
 header {
-  line-height: 1.5;
-  max-height: 100vh;
+    background-color: var(--primary);
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;;
 }
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
+header #logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 }
 
 nav {
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  margin-top: 2rem;
-}
-
-nav a.router-link-exact-active {
-  color: var(--color-text);
-}
-
-nav a.router-link-exact-active:hover {
-  background-color: transparent;
-}
-
-nav a {
-  display: inline-block;
-  padding: 0 1rem;
-  border-left: 1px solid var(--color-border);
-}
-
-nav a:first-of-type {
-  border: 0;
-}
-
-@media (min-width: 1024px) {
-  header {
     display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
-  }
+    gap: 1rem;
+    flex: 1;
+}
 
-  .logo {
-    margin: 0 2rem 0 0;
-  }
+a {
+    text-decoration: none;
+    color: #515151;
+    background-color: var(--dark-primary);
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+}
 
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
+a:hover {
+    background-color: var(--light-primary);
+}
 
-  nav {
-    text-align: left;
-    margin-left: -1rem;
-    font-size: 1rem;
-
-    padding: 1rem 0;
-    margin-top: 1rem;
-  }
+a.currentRoute {
+    background-color: var(--secondary);
 }
 </style>
