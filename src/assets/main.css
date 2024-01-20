@@ -21,10 +21,7 @@ body {
 }
 
 body {
-    background-image: url('/background.svg');
-    background-position: center;
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-color: var(--secondary);
     min-height: 100vh;
 }
 
