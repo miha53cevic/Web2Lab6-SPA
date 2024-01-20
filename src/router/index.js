@@ -1,10 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
 import HomeView from '../views/HomeView.vue';
-import CreatePollView from '../views/CreatePollView.vue';
-import ListView from '../views/ListView.vue';
-import NotFoundView from '../views/NotFoundView.vue';
 import LoginView from '../views/LoginView.vue';
-import PollView from '../views/PollView.vue';
+import { useAuthStore } from '@/stores/authStore';
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -17,12 +14,12 @@ const router = createRouter({
     {
       path: '/create-poll',
       name: 'create-poll',
-      component: CreatePollView
+      component: () => import('../views/CreatePollView.vue')
     },
     {
       path: '/list',
       name: 'list',
-      component: ListView
+      component: () => import('../views/ListView.vue')
     },
     {
         path: '/login',
@@ -32,22 +29,23 @@ const router = createRouter({
     {
         path: '/poll/:id',
         name: 'poll',
-        component: PollView
+        component: () => import('../views/PollView.vue')
     },
     {
         path: '/:catchAll(.*)',
         name: 'not-found',
-        component: NotFoundView
+        component: () => import('../views/NotFoundView.vue')
     },
-    /*{
-      path: '/about',
-      name: 'about',
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import('../views/AboutView.vue')
-    }*/
   ]
+});
+
+router.beforeEach(async (to) => {
+    const privatePages = ['/create-poll'];
+    const state = useAuthStore();
+    if (!state.isAuthenticated && privatePages.includes(to.path)) {
+        state.setLandingUrl(to.fullPath);
+        return '/login';
+    }
 });
 
 export default router;

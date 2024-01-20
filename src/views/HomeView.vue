@@ -1,9 +1,16 @@
 <script>
+import { usePollStore } from '@/stores/pollStore';
+import { mapState, mapActions } from 'pinia';
+
 export default {
-    data() {
-        return {
-            activePolls: 10,
-        }
+    computed: {
+        ...mapState(usePollStore, ['getPolls']),
+    },
+    methods: {
+        ...mapActions(usePollStore, ['fetchPolls'])
+    },
+    async mounted() {
+        await this.fetchPolls();
     }
 };
 </script>
@@ -18,7 +25,7 @@ export default {
         <br/>
         <div class="pollCount">
             <h3>Currently active polls:</h3>
-            <p>{{ activePolls }}</p>
+            <p>{{ getPolls.length }}</p>
         </div>
     </main-container>
 </template>
